@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f0ff; /* Light lavender background */
+      color: #4a148c; /* Dark purple text */
+      padding: 20px;
+      transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transitions */
+    }
+    body.dark-theme {
+      background-color: #1a1a1a; /* Dark background */
+      color: #ffffff; /* Light text */
+    }
+    h1 {
+      color: #6a1b9a; /* Dark purple */
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    .modal.open, .modal-overlay.open {
+      display: block;
+    }
+    .error {
+      color: red;
+      font-size: 0.9rem;
+    }
+    .success {
+      color: green;
+      font-size: 0.9rem;
+    }
+    input[type="range"] {
+      width: 200px;
+    }
+    select {
+      padding: 5px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Profile Settings</h1>
+
+  <!-- Theme Toggle Button -->
+  <button onclick="toggleTheme()">Toggle Theme</button>
+
+  <!-- Font Size Adjuster -->
+  <h2>Adjust Font Size</h2>
+  <input type="range" id="fontSlider" min="12" max="24" value="16" oninput="adjustFontSize()">
+  <p id="sampleText">This is sample text. Adjust the slider to change its size.</p>
+
+  <!-- Edit Profile Modal -->
+  <button onclick="openModal()">Edit Profile</button>
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal" id="modal">
+    <h2>Edit Profile</h2>
+    <form id="profileForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <span id="nameError" class="error"></span><br>
+
+      <label for="bio">Bio:</label>
+      <textarea id="bio" name="bio" rows="4"></textarea><br>
+
+      <button type="submit">Save Changes</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+  </div>
+
+  <!-- Change Password Form -->
+  <h2>Change Password</h2>
+  <form id="passwordForm" onsubmit="return validatePasswordForm()">
+    <label for="currentPassword">Current Password:</label>
+    <input type="password" id="currentPassword" name="currentPassword" required><br>
+
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" name="newPassword" required>
+    <span id="passwordError" class="error"></span><br>
+
+    <button type="submit">Update Password</button>
+  </form>
+
+  <!-- Notification Preferences Dropdown -->
+  <h2>Notification Preferences</h2>
+  <select id="notificationDropdown" onchange="updateNotificationPreference()">
+    <option value="">Select frequency</option>
+    <option value="daily">Daily</option>
+    <option value="weekly">Weekly</option>
+    <option value="monthly">Monthly</option>
+  </select>
+  <p id="notificationMessage"></p>
+
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      document.body.classList.toggle("dark-theme");
+    }
+
+    // Font Size Adjuster
+    function adjustFontSize() {
+      const slider = document.getElementById("fontSlider");
+      const text = document.getElementById("sampleText");
+      text.style.fontSize = `${slider.value}px`;
+    }
+
+    // Modal: Open and Close
+    function openModal() {
+      const modal = document.getElementById("modal");
+      const modalOverlay = document.getElementById("modalOverlay");
+      modal.classList.add("open");
+      modalOverlay.classList.add("open");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("modal");
+      const modalOverlay = document.getElementById("modalOverlay");
+      modal.classList.remove("open");
+      modalOverlay.classList.remove("open");
+    }
+
+    // Change Password Form Validation
+    function validatePasswordForm() {
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+      if (!passwordPattern.test(newPassword)) {
+        document.getElementById("passwordError").textContent =
+          "Password must be at least 8 characters, with one uppercase letter and one number.";
+        return false;
+      } else {
+        document.getElementById("passwordError").textContent = "";
+      }
+
+      alert("Password updated successfully!");
+      return true;
+    }
+
+    // Notification Preferences Dropdown
+    function updateNotificationPreference() {
+      const dropdown = document.getElementById("notificationDropdown");
+      const message = document.getElementById("notificationMessage");
+      const selectedValue = dropdown.value;
+
+      if (selectedValue === "daily") {
+        message.textContent = "You will receive notifications daily.";
+      } else if (selectedValue === "weekly") {
+        message.textContent = "You will receive notifications weekly.";
+      } else if (selectedValue === "monthly") {
+        message.textContent = "You will receive notifications monthly.";
+      } else {
+        message.textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
